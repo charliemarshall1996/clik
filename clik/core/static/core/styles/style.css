@@ -23,20 +23,19 @@
     position: absolute;
     top: 0;
     left: 0;
-    background: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
     z-index: -1; /* Ensure the overlay sits behind the content */
 }
 
 .hero-heading {
-    color: #1F3B57;
+    color: #4A7C59;
     font-size: 5vw;
     font-weight: bold;
 }
 
 .hero-description {
-    color: black;
+    color: #F4A261;
     font-weight: 400;
-    font-size: 1.5vw;
+    font-size: 2vw;
 }
 
 #about-image {
@@ -79,4 +78,9 @@
     .btn-lg {
         font-size: 1.5rem; /* Increase button text size */
     }
+}
+
+.index-img {
+    max-height: 300px;
+    padding: 0;
 }
