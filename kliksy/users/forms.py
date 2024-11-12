@@ -4,6 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
+from .models import Profile
+
 User = get_user_model()
 
 
@@ -29,5 +31,7 @@ class UserRegistrationForm(UserCreationForm):
             raise forms.ValidationError("Spam detected")
 
 
-class ProfileRegistrationForm():
-    pass
+class ProfileRegistrationForm(forms.ModelForm):
+
+    class Meta:
+        pass
