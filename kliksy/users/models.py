@@ -4,8 +4,13 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from datetime import date
+
+from core.utils import get_coordinates, calculate_distance
+
 from .managers import CustomUserManager
 # Create your models here.
+
+ALLOWED_COORDS = [(51.2481, -0.7585)]
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -38,11 +43,28 @@ class Profile(models.Model):
     profile_pic = models.ImageField(
         upload_to='profile_pics', default='default_profile_pic.jpg')
     date_of_birth = models.DateTimeField()
+    address_line_1 = models.CharField(max_length=100)
+    address_line_2 = models.CharField(max_length=100, blank=True, null=True)
+    town = models.CharField(max_length=25)
+    county = models.CharField(default=10)
+    postalcode = models.CharField(max_length=10)
 
     def clean(self):
         super().clean()
         if self.date_of_birth and not self.is_age_valid():
             raise ValidationError("Users must be at least 16 years old.")
+
+        coords = get_coordinates(
+            f"{self.address_line_1} {self.address_line_2}", self.town, self.county, self.postalcode)
+        if coords:
+            self.lat = coords[0]
+            self.lon = coords[1]
+        else:
+            raise ValidationError("Address is invalid.")
+
+        if not self.is_coords_valid():
+            raise ValidationError(
+                "Address is not within the allowed area. We currently only allow users in Rushmoor.")
 
     def is_age_valid(self):
         today = date.today()
@@ -51,6 +73,10 @@ class Profile(models.Model):
                 self.date_of_birth.month, self.date_of_birth.day)
         )
         return age >= 16
+
+    def is_coords_valid(self):
+        return any([calculate_distance(self.lat, self.lon, allowed_lat, allowed_lon)
+                    for allowed_lat, allowed_lon in ALLOWED_COORDS])
 
     def __str__(self):
         return self.user.email

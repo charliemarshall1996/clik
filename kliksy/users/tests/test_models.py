@@ -105,3 +105,87 @@ class TestProfileModel:
         profile = Profile.objects.create(
             user=user, date_of_birth=valid_date_of_birth)
         assert profile.profile_pic.name == 'default_profile_pic.jpg'
+
+    @pytest.fixture
+    def valid_address(self):
+        """Fixture for a valid address that returns coordinates within allowed area."""
+        return {
+            'address_line_1': "221 Weybourne Road",
+            'address_line_2': None,
+            'town': "Aldershot",
+            'county': "Rushmoor",
+            'postalcode': "GU11 3NE"
+        }
+
+    @pytest.fixture
+    def invalid_address(self):
+        """Fixture for an invalid address that returns coordinates outside allowed area."""
+        return {
+            'address_line_1': "Invalid Street",
+            'address_line_2': "Invalid Area",
+            'town': "Invalid Town",
+            'county': "Invalid County",
+            'postalcode': "INV123"
+        }
+
+    def test_clean_method_with_valid_address(self, user, valid_date_of_birth, valid_address, mocker):
+        """Test clean method does not raise ValidationError for a valid address within allowed area."""
+        profile = Profile(
+            user=user, date_of_birth=valid_date_of_birth, **valid_address)
+
+        # Mock get_coordinates to return valid coordinates within allowed area
+        mocker.patch('users.models.get_coordinates',
+                     return_value=(51.2500, -0.7600))
+
+        # Mock calculate_distance to always return a value within 7.5 km
+        mocker.patch('users.models.calculate_distance', return_value=5.0)
+
+        try:
+            profile.clean()
+        except ValidationError:
+            pytest.fail(
+                "ValidationError raised for valid address within allowed area")
+
+    def test_clean_method_with_invalid_address(self, user, valid_date_of_birth, invalid_address, mocker):
+        """Test clean method raises ValidationError for an address outside the allowed area."""
+        profile = Profile(
+            user=user, date_of_birth=valid_date_of_birth, **invalid_address)
+
+        # Mock get_coordinates to return coordinates outside allowed area
+        mocker.patch('users.models.get_coordinates',
+                     return_value=(51.0000, -0.8000))
+
+        # Mock calculate_distance to return a value exceeding 7.5 km
+        mocker.patch('users.models.calculate_distance', return_value=10.0)
+
+        with pytest.raises(ValidationError, match="Address is not within the allowed area."):
+            profile.clean()
+
+    def test_clean_method_with_invalid_coordinates(self, user, valid_date_of_birth, valid_address, mocker):
+        """Test clean method raises ValidationError for invalid address with no coordinates returned."""
+        profile = Profile(
+            user=user, date_of_birth=valid_date_of_birth, **valid_address)
+
+        # Mock get_coordinates to return None, indicating an invalid address
+        mocker.patch('users.models.get_coordinates', return_value=None)
+
+        with pytest.raises(ValidationError, match="Address is invalid."):
+            profile.clean()
+
+    def test_is_coords_valid_with_valid_coords(self, mocker):
+        """Test is_coords_valid returns True for coordinates within the allowed area."""
+        profile = Profile(lat=51.2500, lon=-0.7600)
+
+        # Mock calculate_distance to return a value within 7.5 km
+        mocker.patch('users.models.calculate_distance', return_value=5.0)
+
+        assert profile.is_coords_valid() is True
+
+    def test_is_coords_valid_with_invalid_coords(self, mocker):
+        """Test is_coords_valid returns False for coordinates outside the allowed area."""
+        profile = Profile(lat=51.0000, lon=-0.8000)
+
+        # Mock calculate_distance to return a value exceeding 7.5 km
+        mocker.patch('users.models.calculate_distance', return_value=10.0)
+
+        assert profile.is_coords_valid() is False

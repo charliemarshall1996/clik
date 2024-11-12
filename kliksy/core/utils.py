@@ -1,10 +1,17 @@
+
+import math
 import requests
 
 
-def get_coordinates(address):
+def get_coordinates(street, city, county, postalcode, state=None, country="United Kingdom"):
     url = 'https://nominatim.openstreetmap.org/search'
     params = {
-        'q': address,
+        'street': street,
+        'city': city,
+        'county': county,
+        'state': state,
+        'country': country,
+        'postalcode': postalcode,
         'format': 'json',
         'addressdetails': 1,
         'limit': 1  # Only get the top result
@@ -22,3 +29,17 @@ def get_coordinates(address):
     else:
         print(f"Error: {response.status_code}")
     return None
+
+
+def calculate_distance(lat1, lon1, lat2, lon2):
+    R = 6371  # Earth radius in kilometers
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+
+    a = math.sin(delta_phi / 2) ** 2 + math.cos(phi1) * \
+        math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    return R * c
