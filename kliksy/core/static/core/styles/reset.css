@@ -73,10 +73,10 @@ a.display-5 {
 }
 
 :root {
-  --bs-primary: #4A7C59; /* Navy Blue */
-  --bs-secondary: #A3B18A; /* Teal */
-  --bs-tertiary: #F4A261; /* Yellow */
-  --bs-success: #77C29D;
+  --bs-primary: #4A7C59;
+  --bs-secondary: #A3B18A;
+  --bs-tertiary: #F4A261;
+  --bs-success: #4A7C59;
   --bs-btn-bg: #4A7C59;
   }
 

@@ -1,3 +1,37 @@
-from django.shortcuts import render
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
+
+from .forms import UserRegistrationForm
 # Create your views here.
+
+
+def registration_view(request):
+    if request.method == 'POST':
+        user_form = UserRegistrationForm(request.POST)
+
+        # TODO: Add Profile Form
+
+        if user_form.is_valid():  # noqa
+
+            if user_form.cleaned_data['honeypot']:
+                # Honeypot field should be empty. If it's filled, treat it as spam.
+                messages.error(
+                    request, "Your form submission was detected as spam.")
+                # Redirect to prevent bot resubmission
+                return redirect('home')
+
+            user_form.save()
+
+            # TODO: Send verification email Logic
+            # send_verification_email(user, request)
+
+            messages.success(
+                request, "Your account has been created.\nPlease check your email to verify your account.")
+
+            # Redirect to profile or job application list
+            return redirect('accounts:login')
+    else:
+        user_form = UserRegistrationForm()
+
+    return render(request, 'accounts/register.html', {'user_form': user_form})
