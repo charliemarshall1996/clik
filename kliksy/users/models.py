@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+
+from datetime import date
 from .managers import CustomUserManager
 # Create your models here.
 
@@ -26,3 +29,28 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, null=False)
+    bio = models.TextField(max_length=500, blank=True)
+    profile_pic = models.ImageField(
+        upload_to='profile_pics', default='default_profile_pic.jpg')
+    date_of_birth = models.DateTimeField()
+
+    def clean(self):
+        super().clean()
+        if self.date_of_birth and not self.is_age_valid():
+            raise ValidationError("Users must be at least 16 years old.")
+
+    def is_age_valid(self):
+        today = date.today()
+        age = today.year - self.date_of_birth.year - (
+            (today.month, today.day) < (
+                self.date_of_birth.month, self.date_of_birth.day)
+        )
+        return age >= 16
+
+    def __str__(self):
+        return self.user.email
