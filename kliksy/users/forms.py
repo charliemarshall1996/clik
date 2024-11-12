@@ -27,3 +27,7 @@ class UserRegistrationForm(UserCreationForm):
     def clean_honeypot(self):
         if self.cleaned_data.get('honeypot'):
             raise forms.ValidationError("Spam detected")
+
+
+class ProfileRegistrationForm():
+    pass
