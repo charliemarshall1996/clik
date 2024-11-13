@@ -3,13 +3,12 @@ import math
 import requests
 
 
-def get_coordinates(street, city, county, postalcode, state=None, country="United Kingdom"):
-    url = 'https://nominatim.openstreetmap.org/search'
+def get_coordinates(street, city, county, postalcode, country="United Kingdom"):
+    url = 'https://nominatim.openstreetmap.org/search?'
     params = {
         'street': street,
         'city': city,
         'county': county,
-        'state': state,
         'country': country,
         'postalcode': postalcode,
         'format': 'json',

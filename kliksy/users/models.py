@@ -11,6 +11,7 @@ from .managers import CustomUserManager
 # Create your models here.
 
 ALLOWED_COORDS = [(51.2481, -0.7585)]
+MAX_ALLOWED_DISTANCE = 7.5
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -46,37 +47,53 @@ class Profile(models.Model):
     address_line_1 = models.CharField(max_length=100)
     address_line_2 = models.CharField(max_length=100, blank=True, null=True)
     town = models.CharField(max_length=25)
-    county = models.CharField(default=10)
+    county = models.CharField(max_length=10)
     postalcode = models.CharField(max_length=10)
 
     def clean(self):
         super().clean()
+        self.get_age()
         if self.date_of_birth and not self.is_age_valid():
             raise ValidationError("Users must be at least 16 years old.")
 
-        coords = get_coordinates(
-            f"{self.address_line_1} {self.address_line_2}", self.town, self.county, self.postalcode)
+        if self.address_line_1 and self.address_line_2 != None:
+            street = f"{self.address_line_1} {self.address_line_2}"
+        else:
+            street = self.address_line_1
+
+        coords = get_coordinates(street,
+                                 self.town, self.county, self.postalcode)
+        print("Coords: ", coords)
         if coords:
             self.lat = coords[0]
             self.lon = coords[1]
         else:
-            raise ValidationError("Address is invalid.")
+            raise ValidationError(
+                f"Address is invalid.")
 
         if not self.is_coords_valid():
             raise ValidationError(
                 "Address is not within the allowed area. We currently only allow users in Rushmoor.")
 
     def is_age_valid(self):
+        return self.age >= 16
+
+    def get_age(self):
         today = date.today()
-        age = today.year - self.date_of_birth.year - (
+        self.age = today.year - self.date_of_birth.year - (
             (today.month, today.day) < (
                 self.date_of_birth.month, self.date_of_birth.day)
         )
-        return age >= 16
 
     def is_coords_valid(self):
-        return any([calculate_distance(self.lat, self.lon, allowed_lat, allowed_lon)
-                    for allowed_lat, allowed_lon in ALLOWED_COORDS])
+
+        for allowed_lat, allowed_lon in ALLOWED_COORDS:
+            distance = calculate_distance(
+                self.lat, self.lon, allowed_lat, allowed_lon)
+            print(f"Distance: {distance}")
+            if distance <= MAX_ALLOWED_DISTANCE:
+                return True
+        return False
 
     def __str__(self):
         return self.user.email

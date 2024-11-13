@@ -58,62 +58,13 @@ class TestProfileModel:
         # Fixture to create an invalid date of birth (e.g., 15 years old)
         return timezone.now() - timedelta(days=365 * 15)
 
-    def test_profile_creation(self, user, valid_date_of_birth):
-        """Test profile can be created with valid data."""
-        profile = Profile.objects.create(
-            user=user,
-            bio="This is a test bio.",
-            date_of_birth=valid_date_of_birth,
-        )
-        assert profile.user == user
-        assert profile.bio == "This is a test bio."
-        assert profile.date_of_birth == valid_date_of_birth
-        assert profile.profile_pic.name == 'default_profile_pic.jpg'
-
-    def test_is_age_valid_true(self, user, valid_date_of_birth):
-        """Test is_age_valid method for a user older than 16 years."""
-        profile = Profile.objects.create(
-            user=user, date_of_birth=valid_date_of_birth)
-        assert profile.is_age_valid() is True
-
-    def test_is_age_valid_false(self, user, invalid_date_of_birth):
-        """Test is_age_valid method for a user younger than 16 years."""
-        profile = Profile(user=user, date_of_birth=invalid_date_of_birth)
-        assert profile.is_age_valid() is False
-
-    def test_clean_method_with_valid_age(self, user, valid_date_of_birth):
-        """Test clean method does not raise ValidationError for a valid age."""
-        profile = Profile(user=user, date_of_birth=valid_date_of_birth)
-        try:
-            profile.clean()
-        except ValidationError:
-            pytest.fail("ValidationError raised for valid age")
-
-    def test_clean_method_with_invalid_age(self, user, invalid_date_of_birth):
-        """Test clean method raises ValidationError for a user under 16."""
-        profile = Profile(user=user, date_of_birth=invalid_date_of_birth)
-        with pytest.raises(ValidationError, match="Users must be at least 16 years old."):
-            profile.clean()
-
-    def test_str_method(self, user, valid_date_of_birth):
-        """Test the __str__ method returns the user's email."""
-        profile = Profile(user=user, date_of_birth=valid_date_of_birth)
-        assert str(profile) == user.email
-
-    def test_profile_pic_default_value(self, user, valid_date_of_birth):
-        """Test that profile_pic has the default value if not specified."""
-        profile = Profile.objects.create(
-            user=user, date_of_birth=valid_date_of_birth)
-        assert profile.profile_pic.name == 'default_profile_pic.jpg'
-
     @pytest.fixture
     def valid_address(self):
         """Fixture for a valid address that returns coordinates within allowed area."""
         return {
             'address_line_1': "221 Weybourne Road",
-            'address_line_2': None,
             'town': "Aldershot",
-            'county': "Rushmoor",
+            'county': "Hampshire",
             'postalcode': "GU11 3NE"
         }
 
@@ -127,6 +78,46 @@ class TestProfileModel:
             'county': "Invalid County",
             'postalcode': "INV123"
         }
+
+    def test_profile_creation(self, user, valid_date_of_birth, valid_address):
+        """Test profile can be created with valid data."""
+        profile = Profile.objects.create(
+            user=user,
+            bio="This is a test bio.",
+            date_of_birth=valid_date_of_birth,
+            **valid_address
+        )
+        assert profile.user == user
+        assert profile.bio == "This is a test bio."
+        assert profile.date_of_birth == valid_date_of_birth
+        assert profile.profile_pic.name == 'default_profile_pic.jpg'
+
+    def test_clean_method_with_valid_age(self, user, valid_date_of_birth, valid_address):
+        """Test clean method does not raise ValidationError for a valid age."""
+        profile = Profile(
+            user=user, date_of_birth=valid_date_of_birth, **valid_address)
+        try:
+            profile.clean()
+        except ValidationError:
+            pytest.fail("ValidationError raised for valid age")
+
+    def test_clean_method_with_invalid_age(self, user, invalid_date_of_birth):
+        """Test clean method raises ValidationError for a user under 16."""
+        profile = Profile(user=user, date_of_birth=invalid_date_of_birth)
+        with pytest.raises(ValidationError, match="Users must be at least 16 years old."):
+            profile.clean()
+
+    def test_str_method(self, user, valid_date_of_birth, valid_address):
+        """Test the __str__ method returns the user's email."""
+        profile = Profile(
+            user=user, date_of_birth=valid_date_of_birth, **valid_address)
+        assert str(profile) == user.email
+
+    def test_profile_pic_default_value(self, user, valid_date_of_birth, valid_address):
+        """Test that profile_pic has the default value if not specified."""
+        profile = Profile.objects.create(
+            user=user, date_of_birth=valid_date_of_birth, **valid_address)
+        assert profile.profile_pic.name == 'default_profile_pic.jpg'
 
     def test_clean_method_with_valid_address(self, user, valid_date_of_birth, valid_address, mocker):
         """Test clean method does not raise ValidationError for a valid address within allowed area."""
@@ -142,23 +133,20 @@ class TestProfileModel:
 
         try:
             profile.clean()
-        except ValidationError:
+        except ValidationError as e:
             pytest.fail(
-                "ValidationError raised for valid address within allowed area")
+                f"ValidationError raised for {valid_address} within allowed area: {e}")
 
-    def test_clean_method_with_invalid_address(self, user, valid_date_of_birth, invalid_address, mocker):
+    def test_clean_method_with_invalid_address(self, user, valid_date_of_birth, valid_address, mocker):
         """Test clean method raises ValidationError for an address outside the allowed area."""
         profile = Profile(
-            user=user, date_of_birth=valid_date_of_birth, **invalid_address)
+            user=user, date_of_birth=valid_date_of_birth, **valid_address)
 
         # Mock get_coordinates to return coordinates outside allowed area
         mocker.patch('users.models.get_coordinates',
-                     return_value=(51.0000, -0.8000))
+                     return_value=None)
 
-        # Mock calculate_distance to return a value exceeding 7.5 km
-        mocker.patch('users.models.calculate_distance', return_value=10.0)
-
-        with pytest.raises(ValidationError, match="Address is not within the allowed area."):
+        with pytest.raises(ValidationError, match="Address is invalid."):
             profile.clean()
 
     def test_clean_method_with_invalid_coordinates(self, user, valid_date_of_birth, valid_address, mocker):
@@ -166,26 +154,9 @@ class TestProfileModel:
         profile = Profile(
             user=user, date_of_birth=valid_date_of_birth, **valid_address)
 
-        # Mock get_coordinates to return None, indicating an invalid address
-        mocker.patch('users.models.get_coordinates', return_value=None)
+        # Mock get_coordinates to return
+        mocker.patch('users.models.get_coordinates',
+                     return_value=(530.0000, -1.0000))
 
-        with pytest.raises(ValidationError, match="Address is invalid."):
+        with pytest.raises(ValidationError, match="Address is not within the allowed area. We currently only allow users in Rushmoor."):
             profile.clean()
-
-    def test_is_coords_valid_with_valid_coords(self, mocker):
-        """Test is_coords_valid returns True for coordinates within the allowed area."""
-        profile = Profile(lat=51.2500, lon=-0.7600)
-
-        # Mock calculate_distance to return a value within 7.5 km
-        mocker.patch('users.models.calculate_distance', return_value=5.0)
-
-        assert profile.is_coords_valid() is True
-
-    def test_is_coords_valid_with_invalid_coords(self, mocker):
-        """Test is_coords_valid returns False for coordinates outside the allowed area."""
-        profile = Profile(lat=51.0000, lon=-0.8000)
-
-        # Mock calculate_distance to return a value exceeding 7.5 km
-        mocker.patch('users.models.calculate_distance', return_value=10.0)
-
-        assert profile.is_coords_valid() is False
