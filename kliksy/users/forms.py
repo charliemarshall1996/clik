@@ -34,4 +34,13 @@ class UserRegistrationForm(UserCreationForm):
 class ProfileRegistrationForm(forms.ModelForm):
 
     class Meta:
-        pass
+        model = Profile
+        fields = ['date_of_birth', 'address_line_1',
+                  'address_line_2', 'town', 'county', 'postalcode']
+
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def save(self) -> Profile:
+        return super().save(commit=False)
