@@ -46,6 +46,13 @@ class ProfileRegistrationForm(forms.ModelForm):
         return super().save(commit=False)
 
 
+class UserLoginForm(forms.Form):
+
+    honeypot = forms.CharField(required=False, widget=forms.HiddenInput)
+    email = forms.EmailField(required=True)
+    password = forms.CharField(required=True, widget=forms.PasswordInput)
+
+
 class ResendVerificationEmailForm(forms.Form):
     honeypot = forms.CharField(required=False, widget=forms.HiddenInput)
     email = forms.EmailField(required=True)
