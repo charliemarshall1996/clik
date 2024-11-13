@@ -9,15 +9,30 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import json
 from pathlib import Path
+
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+KEYSDIR = str(BASE_DIR)+"/keys.json"
+
+with open(KEYSDIR) as k:
+    project_keys = json.loads(k.read())
+
+
+def getKey(setting, project_keys=project_keys):
+    try:
+        return project_keys[setting]
+    except KeyError:
+        errorMessage = "Set the {} env var".format(setting)
+        raise ImproperlyConfigured(errorMessage)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-)gar@&rkb1nzno4a5nhi=uq_vh6&z6dz!8_w51(9%+a_os_8x*'
@@ -38,8 +53,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'crispy_bootstrap5',
     'users',
-    'core'
+    'core',
+    'anymail'
 ]
 
 MIDDLEWARE = [
@@ -128,6 +145,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # User
 AUTH_USER_MODEL = 'users.CustomUser'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'users.backends.EmailVerificationBackend'
+]
+
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# Email
+
+EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
+
+BREVO_API_URL = "https://api.brevo.com/v3/"  # optional
+
+ANYMAIL = {
+    "BREVO_API_KEY": getKey("BREVO_API_KEY"),  # use brevo api key
+    "IGNORE_RECIPIENT_STATUS": True,
+}
+DEFAULT_FROM_EMAIL = 'no-reply@apptrack.app'

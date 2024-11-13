@@ -40,6 +40,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class Profile(models.Model):
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, null=False)
+    email_comms_opt_in = models.BooleanField(default=False)
     bio = models.TextField(max_length=500, blank=True)
     profile_pic = models.ImageField(
         upload_to='profile_pics', default='default_profile_pic.jpg')
@@ -48,7 +49,7 @@ class Profile(models.Model):
     address_line_2 = models.CharField(max_length=100, blank=True, null=True)
     town = models.CharField(max_length=25)
     county = models.CharField(max_length=10)
-    postalcode = models.CharField(max_length=10)
+    post_code = models.CharField(max_length=10)
 
     def clean(self):
         super().clean()
@@ -62,7 +63,7 @@ class Profile(models.Model):
             street = self.address_line_1
 
         coords = get_coordinates(street,
-                                 self.town, self.county, self.postalcode)
+                                 self.town, self.county, self.post_code)
         print("Coords: ", coords)
         if coords:
             self.lat = coords[0]

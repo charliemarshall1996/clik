@@ -36,7 +36,7 @@ class ProfileRegistrationForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['date_of_birth', 'address_line_1',
-                  'address_line_2', 'town', 'county', 'postalcode']
+                  'address_line_2', 'town', 'county', 'post_code', 'email_comms_opt_in']
 
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
@@ -44,3 +44,8 @@ class ProfileRegistrationForm(forms.ModelForm):
 
     def save(self) -> Profile:
         return super().save(commit=False)
+
+
+class ResendVerificationEmailForm(forms.Form):
+    honeypot = forms.CharField(required=False, widget=forms.HiddenInput)
+    email = forms.EmailField(required=True)

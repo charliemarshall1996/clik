@@ -65,7 +65,7 @@ class TestProfileModel:
             'address_line_1': "221 Weybourne Road",
             'town': "Aldershot",
             'county': "Hampshire",
-            'postalcode': "GU11 3NE"
+            'post_code': "GU11 3NE"
         }
 
     @pytest.fixture
@@ -76,7 +76,7 @@ class TestProfileModel:
             'address_line_2': "Invalid Area",
             'town': "Invalid Town",
             'county': "Invalid County",
-            'postalcode': "INV123"
+            'post_code': "INV123"
         }
 
     def test_profile_creation(self, user, valid_date_of_birth, valid_address):
