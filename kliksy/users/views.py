@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 
 from .forms import UserRegistrationForm, ProfileRegistrationForm
+from .utils import send_verification_email
 # Create your views here.
 
 
@@ -29,8 +30,8 @@ def registration_view(request):
             profile.clean()
             profile.save()
 
-            # TODO: Send verification email Logic
-            # send_verification_email(user, request)
+            # Send verification email
+            send_verification_email(user, request)
 
             messages.success(
                 request, "Your account has been created.\nPlease check your email to verify your account.")
