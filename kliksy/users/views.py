@@ -3,8 +3,10 @@ from datetime import timedelta
 
 from django.contrib.auth import get_user_model, logout, get_backends, authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic.detail import DetailView
 from django.urls import reverse
 from django.utils import timezone
 
@@ -247,3 +249,15 @@ def interests_view(request):
         form = InterestsForm(instance=profile)
 
     return render(request, 'users/interests.html', {'form': form})
+
+
+class ProfileView(LoginRequiredMixin, DetailView):
+    model = Profile
+    template_name = 'users/profile.html'  # Adjust based on your template
+    slug_field = 'user.email'  # Or 'slug' if you use a custom slug field
+    slug_url_kwarg = 'slug'  # This is the URL parameter expected
+
+    # Override get_object to use the logged-in user
+    def get_object(self):
+        # Return the logged-in user based on the slug
+        return self.request.user
