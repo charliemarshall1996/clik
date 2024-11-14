@@ -198,3 +198,7 @@ def custom_login_view(request):
 
     context = {'form': form}
     return render(request, 'users/login.html', context)
+
+
+def interests_view(request):
+    return render(request, 'users/interests.html')
