@@ -129,84 +129,121 @@ def resend_verification_email_view(request):
 
 
 def custom_login_view(request):
+    # Check if the request method is POST
     if request.method == "POST":
+        # Instantiate the login form with POST data
         form = UserLoginForm(request.POST)
 
+        # Validate the form
         if form.is_valid():
+            # Check honeypot field for spam detection
             if form.cleaned_data['honeypot']:
-                # Honeypot field should be empty. If it's filled, treat it as spam.
+                # If honeypot field is filled, treat as spam and show error
                 messages.error(
                     request, "Your form submission was detected as spam.")
-                # Redirect to prevent bot resubmission
+                # Redirect to the home page to prevent bot resubmission
                 return redirect('home')
 
+            # Retrieve email and password from the form
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
+            # Authenticate the user with provided email and password
             user = authenticate(request, email=email, password=password)
 
+            # If authentication is successful
             if user is not None:
-
+                # Check if the user's email is verified
                 if user.email_verified:
+                    # Identify the correct authentication backend for the user
                     for backend in get_backends():
                         if user == backend.get_user(user.id):
                             user.backend = f'{backend.__module__}.{backend.__class__.__name__}'
                             break
 
+                    # Log the user in
                     login(request, user)
+                    # Access the user's profile
                     profile = user.profile
+                    # Check if the user has interests
                     if profile.interests.count() > 0:
+                        # Redirect to the user's profile page if interests are present
                         return redirect('users:profile')
                     else:
+                        # Redirect to the interests page if no interests are set
                         return redirect('users:interests')
                 else:
+                    # Set timeout duration for email verification
                     timeout_duration = timedelta(minutes=10)
 
-                    # Example time since last email logic
+                    # Check if a verification email has been sent before
                     if user.last_verification_email_sent:
+                        # Calculate time since the last email was sent
                         time_since_last_email = get_time_since_last_email(
                             user.last_verification_email_sent)
 
+                        # Determine if the verification email can be resent
                         can_resend = get_can_resend(
                             timeout_duration, time_since_last_email)
 
                         if can_resend:
+                            # Generate URL for resending verification email
                             resend_verification_url = reverse(
                                 'users:resend_verification_email')
 
+                            # Inform the user to verify their email
                             message = ("Please verify your email before logging in."
                                        "Please check your email for the verification link, including spam folder."
                                        f"If you need to resend the verification email, please click <a href='{resend_verification_url}'>here</a>.")
                         else:
-
+                            # Calculate minutes left before a new verification email can be sent
                             minutes_difference = get_minutes_left_before_resend(
                                 time_since_last_email, timeout_duration)
 
+                            # Inform the user of the wait time before resending the email
                             message = (f"""Please verify your email before logging in.
                                        Please check your email for the verification link, including spam folder.
                                        You must wait {round(minutes_difference)} minutes before resending the verification email.""")
 
                     else:
+                        # If no verification email has been sent, provide URL to resend
                         resend_verification_url = reverse(
                             'users:resend_verification_email')
 
+                        # Inform the user to verify their email
                         message = ("Please verify your email before logging in."
                                    "Please check your email for the verification link, including spam folder."
                                    f"If you need to resend the verification email, please click <a href='{resend_verification_url}'>here</a>.")
 
-                    messages.error(
-                        request, message)
+                    # Display an error message with the verification instructions
+                    messages.error(request, message)
                     # Redirect to the login page
                     return redirect('users:login')
             else:
+                # If authentication fails, show error message
                 messages.error(request, "Invalid login credentials")
+                # Redirect to the login page
                 return redirect('users:login')
     else:
+        # If request method is not POST, instantiate an empty login form
         form = UserLoginForm()
 
+    # Prepare context with the form to render the login page
     context = {'form': form}
+    # Render the login page with the context
     return render(request, 'users/login.html', context)
 
 
 @login_required
 def interests_view(request):
-    return render(request, 'users/interests.html')
+    # Assuming one-to-one relation with User
+    profile = Profile.objects.get(user=request.user)
+    if request.method == "POST":
+        form = InterestsForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            # Redirect to the profile or another relevant page
+            return redirect('users:profile')
+    else:
+        form = InterestsForm(instance=profile)
+
+    return render(request, 'users/interests.html', {'form': form})

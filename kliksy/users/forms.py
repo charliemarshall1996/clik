@@ -58,8 +58,17 @@ class ResendVerificationEmailForm(forms.Form):
     email = forms.EmailField(required=True)
 
 
-class InterestsForm(forms.Form):
-
+class InterestsForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['interests']
+        widgets = {
+            # optional: use checkboxes for easier selection
+            'interests': forms.CheckboxSelectMultiple,
+        }
+
+    def clean_interests(self):
+        interests = self.cleaned_data.get('interests')
+        if interests.count() > 5:
+            raise ValidationError("You can select a maximum of 5 categories.")
+        return interests
