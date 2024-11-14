@@ -39,7 +39,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class Profile(models.Model):
     user = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, null=False)
+        CustomUser, on_delete=models.CASCADE, null=False, related_name='profile')
     email_comms_opt_in = models.BooleanField(default=False)
     bio = models.TextField(max_length=500, blank=True)
     profile_pic = models.ImageField(

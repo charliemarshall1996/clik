@@ -2,6 +2,7 @@
 from datetime import timedelta
 
 from django.contrib.auth import get_user_model, logout, get_backends, authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -10,7 +11,9 @@ from django.utils import timezone
 from .forms import (UserRegistrationForm,
                     ProfileRegistrationForm,
                     ResendVerificationEmailForm,
-                    UserLoginForm)
+                    UserLoginForm,
+                    InterestsForm)
+from .models import Profile
 from .utils import (send_verification_email,
                     get_time_since_last_email,
                     get_minutes_left_before_resend,
@@ -150,7 +153,11 @@ def custom_login_view(request):
                             break
 
                     login(request, user)
-                    return redirect('jobs:board')
+                    profile = user.profile
+                    if profile.interests.count() > 0:
+                        return redirect('users:profile')
+                    else:
+                        return redirect('users:interests')
                 else:
                     timeout_duration = timedelta(minutes=10)
 
@@ -200,5 +207,6 @@ def custom_login_view(request):
     return render(request, 'users/login.html', context)
 
 
+@login_required
 def interests_view(request):
     return render(request, 'users/interests.html')
