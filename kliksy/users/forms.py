@@ -56,3 +56,10 @@ class UserLoginForm(forms.Form):
 class ResendVerificationEmailForm(forms.Form):
     honeypot = forms.CharField(required=False, widget=forms.HiddenInput)
     email = forms.EmailField(required=True)
+
+
+class InterestsForm(forms.Form):
+
+    class Meta:
+        model = Profile
+        fields = ['interests']
