@@ -22,11 +22,12 @@
 
 <body class="d-flex flex-column min-vh-100 container-fluid px-0">
     <div class="container-fluid">
-        <div class="card">
+        <div class="card w-50 m-auto mt-auto">
             <div class="card-header">
                 <h2 class="card-title">Interests</h2>
             </div>
             <div class="card-body">
+                <p>Please select 3-5 categories that interest you.</p>
                 {% load crispy_forms_tags %}
                 <form method="POST">
                     {% csrf_token %}

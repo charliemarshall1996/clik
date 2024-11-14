@@ -71,4 +71,6 @@ class InterestsForm(forms.ModelForm):
         interests = self.cleaned_data.get('interests')
         if interests.count() > 5:
             raise ValidationError("You can select a maximum of 5 categories.")
+        elif interests.count() < 3:
+            raise ValidationError("You must select at least 3 categories.")
         return interests
