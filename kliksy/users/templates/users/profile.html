@@ -9,7 +9,7 @@
         <div class="row text-start justify-content-end align-items-stretch text-nowrap">
             <div class="row text-start align-items-center">
                 <div class="col-md-12 d-flex align-items-center">
-                    <img src="{{ user.profile.profile_pic.url }}" alt="Profile Image" class="img-fluid me-3" style="max-width: 100px;">
+                    <img src="{{ user.profile.profile_pic.url }}" alt="Profile Image" class="img-thumbnail me-3" style="max-width: 50px;">
                     <h1 class="mb-0">{{ user.first_name }} {{ user.last_name }}</h1>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="row text-center">
-                    {% for event in user.events.all %}
+                    {% for event in user.profile.events.all %}
                     <div class="col">
                         <div class="card">
                             <div class="card-header-img">
