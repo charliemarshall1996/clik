@@ -9,6 +9,8 @@ class Groups(models.Model):
     image = models.ImageField(
         upload_to='group_pics', default='default_group_pic.png')
     name = models.CharField(max_length=100)
+    creator = models.ForeignKey(
+        Profile, related_name='created_groups', on_delete=models.CASCADE)
     members = models.ManyToManyField(Profile, related_name='groups')
     category = models.ManyToManyField(Categories, related_name='groups')
 
