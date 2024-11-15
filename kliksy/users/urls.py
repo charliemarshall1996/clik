@@ -1,6 +1,5 @@
 
-from django.conf import settings
-from django.conf.urls.static import static
+
 from django.urls import path
 
 from . import views
@@ -15,7 +14,3 @@ urlpatterns = [
     path('interests/', views.interests_view, name='interests'),
     path('profile/<slug:slug>/', views.ProfileView.as_view(), name='profile'),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
