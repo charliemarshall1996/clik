@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 
-{% extends 'authorized_base.html' %}
+{% extends 'core/authorized_base.html' %}
 
 {% block content %}
-    <h1>{{ groups.name }}</h1>
-    <p>{{ groups.description }}</p>
-    <img src="{{ groups.image.url }}" alt="Group Image" class="img-fluid">
+<div class="container-fluid vh-100">
+    <div class="card w-75 m-auto">
+        <div class="card-header flex-nowrap">
+            <div class="row text-start justify-content-end align-items-stretch text-nowrap">
+                <div class="row text-start align-items-center">
+                    <div class="col-md-12 d-flex align-items-center">
+                        <img src="{{ groups.image.url }}" alt="Profile Image" class="img-thumbnail me-3" style="max-width: 50px;">
+                        <h1 class="mb-0">{{ groups.name }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+            </div>
+        </div>
+    </div>
+</div>
+    
 {% endblock %}
