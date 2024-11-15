@@ -1,3 +1,6 @@
+
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core.exceptions import ValidationError
@@ -16,7 +19,6 @@ MAX_ALLOWED_DISTANCE = 7.5
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     """Custom User model that uses email instead of username."""
-
     email = models.EmailField(_('email address'), unique=True)
     email_verified = models.BooleanField(default=False)
 
@@ -38,6 +40,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Profile(models.Model):
+    slug = models.SlugField(max_length=30, unique=True,
+                            auto_created=True, blank=True, default=uuid.uuid4)
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, null=False, related_name='profile')
     email_comms_opt_in = models.BooleanField(default=False)

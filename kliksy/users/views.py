@@ -169,7 +169,7 @@ def custom_login_view(request):
                     # Check if the user has interests
                     if profile.interests.count() > 0:
                         # Redirect to the user's profile page if interests are present
-                        return redirect('users:profile')
+                        return redirect('users:profile', slug=profile.slug)
                     else:
                         # Redirect to the interests page if no interests are set
                         return redirect('users:interests')
@@ -254,7 +254,7 @@ def interests_view(request):
 class ProfileView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = 'users/profile.html'  # Adjust based on your template
-    slug_field = 'user.email'  # Or 'slug' if you use a custom slug field
+    slug_field = 'slug'  # Or 'slug' if you use a custom slug field
     slug_url_kwarg = 'slug'  # This is the URL parameter expected
 
     # Override get_object to use the logged-in user

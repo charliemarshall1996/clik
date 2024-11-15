@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import os
 import json
 from pathlib import Path
 
@@ -165,3 +166,7 @@ ANYMAIL = {
     "IGNORE_RECIPIENT_STATUS": True,
 }
 DEFAULT_FROM_EMAIL = 'no-reply@apptrack.app'
+
+# Media
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
