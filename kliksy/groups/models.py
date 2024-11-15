@@ -11,7 +11,8 @@ class Groups(models.Model):
     name = models.CharField(max_length=100)
     creator = models.ForeignKey(
         Profile, related_name='created_groups', on_delete=models.CASCADE)
-    members = models.ManyToManyField(Profile, related_name='groups')
+    members = models.ManyToManyField(
+        Profile, related_name='groups', null=True, blank=True)
     category = models.ManyToManyField(Categories, related_name='groups')
 
 
