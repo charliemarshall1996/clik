@@ -13,8 +13,7 @@ from django.utils import timezone
 from .forms import (UserRegistrationForm,
                     ProfileRegistrationForm,
                     ResendVerificationEmailForm,
-                    UserLoginForm,
-                    InterestsForm)
+                    UserLoginForm)
 from .models import Profile
 from .utils import (send_verification_email,
                     get_time_since_last_email,
@@ -167,12 +166,8 @@ def custom_login_view(request):
                     # Access the user's profile
                     profile = user.profile
                     # Check if the user has interests
-                    if profile.interests.count() > 0:
-                        # Redirect to the user's profile page if interests are present
-                        return redirect('users:profile', slug=profile.slug)
-                    else:
-                        # Redirect to the interests page if no interests are set
-                        return redirect('users:interests')
+                    return redirect('users:profile', slug=profile.slug)
+
                 else:
                     # Set timeout duration for email verification
                     timeout_duration = timedelta(minutes=10)
@@ -233,22 +228,6 @@ def custom_login_view(request):
     context = {'form': form}
     # Render the login page with the context
     return render(request, 'users/login.html', context)
-
-
-@login_required
-def interests_view(request):
-    # Assuming one-to-one relation with User
-    profile = Profile.objects.get(user=request.user)
-    if request.method == "POST":
-        form = InterestsForm(request.POST, instance=profile)
-        if form.is_valid():
-            form.save()
-            # Redirect to the profile or another relevant page
-            return redirect('users:profile')
-    else:
-        form = InterestsForm(instance=profile)
-
-    return render(request, 'users/interests.html', {'form': form})
 
 
 class ProfileView(LoginRequiredMixin, DetailView):

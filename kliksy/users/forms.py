@@ -56,21 +56,3 @@ class UserLoginForm(forms.Form):
 class ResendVerificationEmailForm(forms.Form):
     honeypot = forms.CharField(required=False, widget=forms.HiddenInput)
     email = forms.EmailField(required=True)
-
-
-class InterestsForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['interests']
-        widgets = {
-            # optional: use checkboxes for easier selection
-            'interests': forms.CheckboxSelectMultiple,
-        }
-
-    def clean_interests(self):
-        interests = self.cleaned_data.get('interests')
-        if interests.count() > 5:
-            raise ValidationError("You can select a maximum of 5 categories.")
-        elif interests.count() < 3:
-            raise ValidationError("You must select at least 3 categories.")
-        return interests
