@@ -7,13 +7,16 @@ from users.models import Profile
 
 class Groups(models.Model):
     image = models.ImageField(
-        upload_to='group_pics', default='default_profile_pic.jpg')
+        upload_to='group_pics', default='default_group_pic.png')
     name = models.CharField(max_length=100)
     members = models.ManyToManyField(Profile, related_name='groups')
     category = models.ManyToManyField(Categories, related_name='groups')
 
 
 class Events(models.Model):
+    image = models.ImageField(
+        upload_to="event_pics", default="default_event_pic.png"
+    )
     group = models.ForeignKey(
         Groups, related_name='events', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)

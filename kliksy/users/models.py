@@ -54,12 +54,6 @@ class Profile(models.Model):
     town = models.CharField(max_length=25)
     county = models.CharField(max_length=10)
     post_code = models.CharField(max_length=10)
-    interests = models.ManyToManyField(
-        'core.Category',
-        null=True,
-        blank=True,
-        related_name='interests',
-    )
 
     def clean(self):
         super().clean()

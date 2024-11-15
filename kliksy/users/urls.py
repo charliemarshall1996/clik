@@ -11,6 +11,5 @@ urlpatterns = [
     path('resend-verification-email/', views.resend_verification_email_view,
          name='resend_verification_email'),
     path('login/', views.custom_login_view, name='login'),
-    path('interests/', views.interests_view, name='interests'),
     path('profile/<slug:slug>/', views.ProfileView.as_view(), name='profile'),
 ]
