@@ -6,6 +6,8 @@ from users.models import Profile
 
 
 class Groups(models.Model):
+    image = models.ImageField(
+        upload_to='group_pics', default='default_profile_pic.jpg')
     name = models.CharField(max_length=100)
     members = models.ManyToManyField(Profile, related_name='groups')
     category = models.ManyToManyField(Categories, related_name='groups')
