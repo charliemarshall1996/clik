@@ -41,7 +41,7 @@
                         {% empty %}
                         <div class="col">
                             <p>You haven't joined any groups yet.</p>
-                            <a href="#" class="btn btn-primary">Create a Group</a>
+                            <a href="{% url 'groups:create_group' %}" class="btn btn-primary">Create a Group</a>
                             <p>or</p> <a href="#" class="btn btn-primary">Join a Group</a>
                         </div>
                         {% endfor %}

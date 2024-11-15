@@ -8,7 +8,7 @@ from users.models import Profile
 class Groups(models.Model):
     image = models.ImageField(
         upload_to='group_pics', default='default_group_pic.png')
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     creator = models.ForeignKey(
         Profile, related_name='created_groups', on_delete=models.CASCADE)
     members = models.ManyToManyField(

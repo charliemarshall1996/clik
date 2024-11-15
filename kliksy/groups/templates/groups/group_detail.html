@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+
+{% extends 'authorized_base.html' %}
+
+{% block content %}
+    <h1>{{ groups.name }}</h1>
+    <p>{{ groups.description }}</p>
+    <img src="{{ groups.image.url }}" alt="Group Image" class="img-fluid">
+{% endblock %}
