@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+{% extends 'core/authorized_base.html' %}
+
+{% block content %}
+<div class="row text-center">
+    <div class="col">
+        <h1>Groups</h1>
+    </div>
+</div>
+<div class="row text-center">
+    <div class="col mx-auto ">
+        <div class="card w-75 m-auto">
+
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    {% for group in page_obj %}
+                        <div class="list-group-item">
+                            <div class="row">
+                                <div class="col">
+                                    <h3>{{ group.name }}</h3>
+                                </div>
+                                <div class="col">
+                                    <p>{% for cat in group.category.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                                </div>
+                                <div class="col">
+                                    <img src="{{ group.image.url }}" alt="Group Image" class="img-thumbnail me-3" style="max-width: 50px;">
+                                </div>
+                                <div class="col">
+                                    <a href="{% url 'groups:group_detail' group.name %}" class="btn btn-primary">View Group</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+            <div class="card-footer d-flex">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center align-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">&laquo;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">&lsaquo;</a>
+                        </li>
+                        {% endif %}
+
+                        {% for page in page_obj.paginator.page_range %}
+                            {% if page == page_obj.number %}
+                                <li class="page-item active"><span class="page-link">{{ page }}</span></li>
+                            {% elif page <= page_obj.number|add:9 and page >= page_obj.number|add:-9 %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">&rsaquo;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">&raquo;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

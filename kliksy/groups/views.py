@@ -1,7 +1,7 @@
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse
 
@@ -35,3 +35,13 @@ class GroupDetailView(LoginRequiredMixin, DetailView):
     template_name = 'groups/group_detail.html'  # Adjust based on your template
     slug_field = 'name'  # Or 'slug' if you use a custom slug field
     slug_url_kwarg = 'slug'  # This is the URL parameter expected
+
+
+class GroupsListView(LoginRequiredMixin, ListView):
+    model = Groups
+    template_name = 'groups/groups_list.html'
+    context_object_name = 'groups'  # Optional, for clarity in templates
+    paginate_by = 1  # Number of groups per page
+
+    def get_queryset(self):
+        return Groups.objects.all().order_by('name')

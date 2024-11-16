@@ -37,7 +37,7 @@
               <a class="nav-link" href="#">Events</a>
             </li>
             <li class="nav-item px-1">
-              <a class="nav-link" href="#">Groups</a>
+              <a class="nav-link" href="{% url 'groups:groups_list' %}">Groups</a>
             </li>
             <li class="nav-item px-1 ms-auto">
               <a class="nav-link" href="{% url 'users:profile' slug=user.profile.slug %}">Profile</a>

@@ -14,6 +14,7 @@ class Groups(models.Model):
     members = models.ManyToManyField(
         Profile, related_name='groups', null=True, blank=True)
     category = models.ManyToManyField(Categories, related_name='groups')
+    description = models.TextField(max_length=1500)
 
 
 class Events(models.Model):
