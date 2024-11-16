@@ -12,11 +12,11 @@
     <div class="col mx-auto ">
         <div class="card w-75 m-auto">
 
-            <div class="card-body">
-                <div class="list-group list-group-flush">
+            <div class="card-body p-0">
+                <div class="list-group">
                     {% for group in page_obj %}
-                        <div class="list-group-item">
-                            <div class="row">
+                        <a class="list-group-item-action" href="{% url 'groups:group_detail' group.name %}">
+                            <div class="row text-start p-2 align-items-center">
                                 <div class="col">
                                     <h3>{{ group.name }}</h3>
                                 </div>
@@ -24,13 +24,10 @@
                                     <p>{% for cat in group.category.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
                                 </div>
                                 <div class="col">
-                                    <img src="{{ group.image.url }}" alt="Group Image" class="img-thumbnail me-3" style="max-width: 50px;">
-                                </div>
-                                <div class="col">
-                                    <a href="{% url 'groups:group_detail' group.name %}" class="btn btn-primary">View Group</a>
+                                    <img src="{{ group.image.url }}" alt="Group Image" class="img-thumbnail me-3" style="max-width: 100px;">
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     {% endfor %}
                 </div>
             </div>

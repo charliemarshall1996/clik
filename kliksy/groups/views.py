@@ -44,7 +44,7 @@ class GroupsListView(LoginRequiredMixin, ListView):
     model = Group
     template_name = 'groups/groups_list.html'
     context_object_name = 'groups'  # Optional, for clarity in templates
-    paginate_by = 1  # Number of groups per page
+    paginate_by = 10  # Number of groups per page
 
     def get_queryset(self):
         return Group.objects.all().order_by('name')

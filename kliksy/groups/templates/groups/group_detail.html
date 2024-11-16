@@ -78,29 +78,36 @@
                     </div>
                 </div>
                 <div class="row">
-                    {% for event in group.events.all %}
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-header-img">
-                                <img src="{{ event.image.url }}" alt="Event Image" class="img-thumbnail">
+                    <div class="list-group">
+                        {% for event in group.events.all %}
+                        <a class="list-group-item-action" href="{% url 'groups:create_event' group.name %}">
+                            <div class="row text-start p-2 align-items-center">
+                                <div class="col">
+                                    <h3>{{ event.name }}</h3>
+                                </div>
+                                <div class="col">
+                                    <p>{{ event.date }}</p>
+                                </div>
+                                <div class="col">
+                                    <p>{{ event.time }}</p>
+                                </div>
+                                <div class="col">
+                                    <img src="{{ event.image.url }}" alt="Event Image" class="img-thumbnail me-3" style="max-width: 100px;">
+                                </div>
                             </div>
-                            <div class="card-header">
-                                <h3>{{ event.name }}</h3>
-                            </div>
-                            <div class="card-body">
-                                <p>{{ event.description }}</p>
+                        </a>
+                        {% empty %}
+                        <div class="row">
+                            <div class="col">
+                                <p>This group has no events yet.</p>
+                                {% if user == group.creator.user %}
+                                <a href="{% url 'groups:create_event' group.name %}" class="btn btn-primary">Create an Event</a>
+                                {% endif %}
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
-                    {% empty %}
                     
-                    <div class="col">
-                        <p>This group has no events yet.</p>
-                        {% if user == group.creator.user %}
-                        <a href="{% url 'groups:create_event' group.name %}" class="btn btn-primary">Create an Event</a>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
                 </div>
             </div>
             <div class="col">
