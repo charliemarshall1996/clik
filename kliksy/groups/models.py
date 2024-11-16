@@ -7,13 +7,14 @@ from users.models import Profile
 
 class Groups(models.Model):
     image = models.ImageField(
-        upload_to='group_pics', default='default_group_pic.png')
+        upload_to='group_pics', default='default_group_pic.png', blank=True)
     name = models.CharField(max_length=100, unique=True)
     creator = models.ForeignKey(
         Profile, related_name='created_groups', on_delete=models.CASCADE)
     members = models.ManyToManyField(
         Profile, related_name='groups', null=True, blank=True)
-    category = models.ManyToManyField(Categories, related_name='groups')
+    category = models.ManyToManyField(
+        Categories, related_name='groups')
     description = models.TextField(max_length=1500)
 
 

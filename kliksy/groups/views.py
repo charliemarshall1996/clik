@@ -45,3 +45,14 @@ class GroupsListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Groups.objects.all().order_by('name')
+
+
+class GroupUpdateView(LoginRequiredMixin, UpdateView):
+    model = Groups
+    template_name = 'groups/update_group.html'
+    fields = ['name', 'image', 'category']
+    slug_field = 'name'
+    slug_url_kwarg = 'slug'
+
+    def get_success_url(self):
+        return reverse('groups:group_detail', kwargs={'slug': self.object.name})
