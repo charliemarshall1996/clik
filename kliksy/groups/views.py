@@ -49,7 +49,7 @@ class GroupsListView(LoginRequiredMixin, ListView):
 
 class GroupUpdateView(LoginRequiredMixin, UpdateView):
     model = Groups
-    template_name = 'groups/update_group.html'
+    template_name = 'groups/group_update.html'
     fields = ['name', 'image', 'category']
     slug_field = 'name'
     slug_url_kwarg = 'slug'
