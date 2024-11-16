@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse
 
 from .forms import CreateGroupForm
-from .models import Groups
+from .models import Group
 
 # Create your views here.
 
@@ -31,28 +31,34 @@ def create_group_view(request):
 
 
 class GroupDetailView(LoginRequiredMixin, DetailView):
-    model = Groups
+    model = Group
     template_name = 'groups/group_detail.html'  # Adjust based on your template
     slug_field = 'name'  # Or 'slug' if you use a custom slug field
     slug_url_kwarg = 'slug'  # This is the URL parameter expected
 
 
 class GroupsListView(LoginRequiredMixin, ListView):
-    model = Groups
+    model = Group
     template_name = 'groups/groups_list.html'
     context_object_name = 'groups'  # Optional, for clarity in templates
     paginate_by = 1  # Number of groups per page
 
     def get_queryset(self):
-        return Groups.objects.all().order_by('name')
+        return Group.objects.all().order_by('name')
 
 
 class GroupUpdateView(LoginRequiredMixin, UpdateView):
-    model = Groups
+    model = Group
     template_name = 'groups/group_update.html'
     fields = ['name', 'image', 'category']
     slug_field = 'name'
     slug_url_kwarg = 'slug'
+
+    def form_valid(self, form):
+        # Check if the image is being cleared
+        if 'image-clear' in self.request.POST:  # Default Django form clearing behavior
+            form.instance.image = 'default_group_pic.png'
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('groups:group_detail', kwargs={'slug': self.object.name})

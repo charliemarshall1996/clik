@@ -1,12 +1,12 @@
 
 from django.forms import ModelForm
 
-from .models import Groups
+from .models import Group
 
 
 class CreateGroupForm(ModelForm):
     class Meta:
-        model = Groups
+        model = Group
         fields = ['name', 'image', 'category']
 
     def save(self):
