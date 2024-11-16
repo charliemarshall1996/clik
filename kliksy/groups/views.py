@@ -1,16 +1,19 @@
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse
 
-from .forms import CreateGroupForm
-from .models import Group
+
+from .forms import CreateGroupForm, CreateEventForm
+from .models import Group, Event
 
 # Create your views here.
 
 
+@login_required
 def create_group_view(request):
     if request.method == "POST":
         form = CreateGroupForm(request.POST)
@@ -62,3 +65,19 @@ class GroupUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('groups:group_detail', kwargs={'slug': self.object.name})
+
+
+@login_required
+def create_event_view(request, group_name):
+    group = Group.objects.get(name=group_name)
+    if request.method == 'POST':
+        form = CreateEventForm(request.POST)
+        if form.is_valid():
+            event = form.save()
+            event.group = group
+            event.save()
+            return redirect('groups:group_detail', slug=group_name)
+    else:
+        form = CreateEventForm()
+
+    return render(request, 'groups/create_group.html', {'form': form})

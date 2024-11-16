@@ -97,7 +97,7 @@
                     <div class="col">
                         <p>This group has no events yet.</p>
                         {% if user == group.creator.user %}
-                        <a href="#" class="btn btn-primary">Create an Event</a>
+                        <a href="{% url 'groups:create_event' group.name %}" class="btn btn-primary">Create an Event</a>
                         {% endif %}
                     </div>
                     {% endfor %}

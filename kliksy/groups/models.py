@@ -7,7 +7,7 @@ from users.models import Profile
 
 class Group(models.Model):
     image = models.ImageField(
-        upload_to='group_pics', default='group_pics/default_group_pic.png', blank=True)
+        upload_to='group_pics', default='default_group_pic.png', blank=True)
     name = models.CharField(max_length=100, unique=True)
     creator = models.ForeignKey(
         Profile, related_name='created_groups', on_delete=models.CASCADE)
@@ -20,8 +20,7 @@ class Group(models.Model):
 
 class Event(models.Model):
     image = models.ImageField(
-        upload_to="event_pics", default="default_event_pic.png"
-    )
+        upload_to="event_pics", default="default_event_pic.png", blank=True)
     group = models.ForeignKey(
         Group, related_name='events', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
