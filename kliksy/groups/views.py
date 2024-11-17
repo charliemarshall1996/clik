@@ -89,3 +89,30 @@ class EventDetailView(LoginRequiredMixin, DetailView):
     template_name = 'groups/event_detail.html'
     slug_field = 'id'
     slug_url_kwarg = 'slug'
+
+
+@login_required
+def join_event_view(request, event_id):
+    event = Event.objects.get(id=event_id)
+    user = request.user
+    event.attendees.add(user.profile)
+    event.save()
+    return redirect('groups:event_detail', slug=event_id)
+
+
+@login_required
+def leave_event_view(request, event_id):
+    event = Event.objects.get(id=event_id)
+    user = request.user
+    event.attendees.remove(user.profile)
+    event.save()
+    return redirect('groups:event_detail', slug=event_id)
+
+
+@login_required
+def join_group_view(request, group_name):
+    group = Group.objects.get(name=group_name)
+    user = request.user
+    group.members.add(user.profile)
+    group.save()
+    return redirect('groups:group_detail', slug=group_name)

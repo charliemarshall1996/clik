@@ -28,4 +28,4 @@ class Event(models.Model):
     date = models.DateField()
     time = models.TimeField()
     location = models.CharField(max_length=100)
-    attendants = models.ManyToManyField(Profile, related_name='events')
+    attendees = models.ManyToManyField(Profile, related_name='events')

@@ -15,7 +15,31 @@
             <div class="col-md-2 text-end">
                 <a href="#" class="btn btn-primary">Edit Event</a>
             </div>
+            {% endif %}
 
+            {% if user.profile in event.group.members.all %}
+                {% if user.profile in event.attendees.all %}
+                <div class="col-md-2 text-end">
+                    <a href="{% url 'groups:leave_event' event.id %}" class="btn btn-danger">Leave Event</a>
+                </div>
+                {% else %}
+                <div class="col-md-2 text-end">
+                    <a href="{% url 'groups:join_event' event.id %}" class="btn btn-primary">Join Event</a>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="col-md-2 text-end">
+                    <div class="row">
+                        <div class="col">
+                            <p>To join this event, please join the group first: </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a href="{% url 'groups:join_group' event.group.name %}" class="btn btn-primary">Join Group</a>
+                        </div>
+                    </div>
+                </div>
             {% endif %}
         </div>
     </div>
