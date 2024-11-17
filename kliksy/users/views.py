@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
 from django.urls import reverse
 from django.utils import timezone
 
@@ -239,10 +240,29 @@ class ProfileView(LoginRequiredMixin, DetailView):
     # Override get_object to use the logged-in user
     def get_object(self):
         # Return the logged-in user based on the slug
-        return self.request.user
+        return Profile.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))
 
 
 @login_required
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = Profile
+    template_name = 'users/update_profile.html'
+    slug_field = 'slug'  # Or 'slug' if you use a custom slug field
+    slug_url_kwarg = 'slug'  # This is the URL parameter expected
+    fields = ("user.email", "user.first_name",
+              "user.last_name", "bio", "image")
+
+    def form_valid(self, form):
+        # Check if the image is being cleared
+        if 'image-clear' in self.request.POST:  # Default Django form clearing behavior
+            form.instance.image = 'default_profile_pic.png'
+        return super().form_valid(form)
+
+    def get_object(self):
+        # Return the logged-in user based on the slug
+        return self.request.user

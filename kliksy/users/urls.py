@@ -13,4 +13,6 @@ urlpatterns = [
     path('login/', views.custom_login_view, name='login'),
     path('profile/<slug:slug>/', views.ProfileView.as_view(), name='profile'),
     path('logout/', views.logout_view, name='logout'),
+    path('update-profile/<slug:slug>/',
+         views.ProfileUpdateView.as_view(), name='update_profile'),
 ]

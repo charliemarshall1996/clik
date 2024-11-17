@@ -8,10 +8,15 @@
     <div class="card-header flex-nowrap">
         <div class="row text-start justify-content-end align-items-stretch text-nowrap">
             <div class="row text-start align-items-center">
-                <div class="col-md-12 d-flex align-items-center">
-                    <img src="{{ user.profile.profile_pic.url }}" alt="Profile Image" class="img-thumbnail me-3" style="max-width: 50px;">
-                    <h1 class="mb-0">{{ user.first_name }} {{ user.last_name }}</h1>
+                <div class="col d-flex align-items-center">
+                    <img src="{{ profile.profile_pic.url }}" alt="Profile Image" class="img-thumbnail me-3" style="max-width: 50px;">
+                    <h1 class="mb-0">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
                 </div>
+                {% if profile.user == request.user %}
+                <div class="col text-end">
+                    <a href="{% url 'users:update_profile' profile.slug %}" class="btn btn-primary">Update Profile</a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -28,7 +33,7 @@
                 <div class="row text-center">
                     <div class="col">
                         <div class="list-group">
-                            {% for group in user.profile.groups.all|dictsort:"name" %}
+                            {% for group in profile.groups.all|dictsort:"name" %}
                             <a class="list-group-item-action" href="{% url 'groups:group_detail' group.name %}">
                                 <div class="row">
                                     <div class="col">
@@ -57,7 +62,7 @@
                     </div>
                 </div>
                 <div class="row text-center">
-                    {% for event in user.profile.events.all|dictsort:"date" %}
+                    {% for event in profile.events.all|dictsort:"date" %}
                     <a class="list-group-item-action" href="{% url 'groups:event_detail' event.id %}">
                         <div class="row">
                             <div class="col">

@@ -46,7 +46,7 @@ class Profile(models.Model):
         CustomUser, on_delete=models.CASCADE, null=False, related_name='profile')
     email_comms_opt_in = models.BooleanField(default=False)
     bio = models.TextField(max_length=500, blank=True)
-    profile_pic = models.ImageField(
+    image = models.ImageField(
         upload_to='profile_pics', default='default_profile_pic.jpg')
     date_of_birth = models.DateTimeField()
     address_line_1 = models.CharField(max_length=100)
