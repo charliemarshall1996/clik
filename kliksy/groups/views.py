@@ -116,3 +116,13 @@ def join_group_view(request, group_name):
     group.members.add(user.profile)
     group.save()
     return redirect('groups:group_detail', slug=group_name)
+
+
+class EventsListView(LoginRequiredMixin, ListView):
+    model = Event
+    template_name = 'groups/events_list.html'
+    context_object_name = 'events'  # Optional, for clarity in templates
+    paginate_by = 10  # Number of groups per page
+
+    def get_queryset(self):
+        return Event.objects.all().order_by('date')

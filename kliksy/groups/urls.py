@@ -20,4 +20,5 @@ urlpatterns = [
          views.leave_event_view, name="leave_event"),
     path("join-group/<slug:group_name>/",
          views.join_group_view, name="join_group"),
+    path("events-list/", views.EventsListView.as_view(), name="events_list"),
 ]
