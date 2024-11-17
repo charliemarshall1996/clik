@@ -12,5 +12,7 @@ urlpatterns = [
          views.GroupUpdateView.as_view(), name="group_update"),
     path("create-event/<slug:group_name>/",
          views.create_event_view, name="create_event"),
+    path("event-detail/<slug:slug>/",
+         views.EventDetailView.as_view(), name="event_detail"),
 
 ]

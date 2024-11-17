@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+{% extends 'core/authorized_base.html' %}
+
+{% block content %}
+
+<div class="card w-75 m-auto">
+    <div class="card-header flex-nowrap">
+        <div class="row text-start justify-content-between align-items-stretch text-nowrap">
+            <div class="col-md-8 d-flex align-items-center">
+                <img src="{{ event.image.url }}" alt="Profile Image" class="img-thumbnail me-3" style="max-width: 50px;">
+                <h1 class="mb-0">{{ event.name }}</h1>
+            </div>
+            {% if user == event.group.creator.user %}
+            <div class="col-md-2 text-end">
+                <a href="#" class="btn btn-primary">Edit Event</a>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>Attendees</h2>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="list-group list-group-flush">
+                    {% for attendee in event.attendees.all %}
+                        <div class="list-group-item">
+                            <div class="row text-start">
+                                <div class="col">
+                                    <img src="{{ attendee.profile_pic.url }}" alt="Profile Image" class="img-thumbnail" style="max-width: 50px;">
+                                </div>
+                                <div class="col">
+                                    <p>{{ attendee.user.first_name }} {{ attendee.user.last_name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>When</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>{{ event.date }} at {{ event.time }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>What</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>{{ event.description }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>Where</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>{{ event.location }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    
+{% endblock %}

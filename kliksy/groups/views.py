@@ -75,9 +75,17 @@ def create_event_view(request, group_name):
         if form.is_valid():
             event = form.save()
             event.group = group
+            event.members.add(request.user.profile)
             event.save()
             return redirect('groups:group_detail', slug=group_name)
     else:
         form = CreateEventForm()
 
     return render(request, 'groups/create_group.html', {'form': form})
+
+
+class EventDetailView(LoginRequiredMixin, DetailView):
+    model = Event
+    template_name = 'groups/event_detail.html'
+    slug_field = 'id'
+    slug_url_kwarg = 'slug'
