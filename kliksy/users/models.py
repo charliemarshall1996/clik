@@ -61,10 +61,15 @@ class Profile(models.Model):
         if self.date_of_birth and not self.is_age_valid():
             raise ValidationError("Users must be at least 16 years old.")
 
-        if self.address_line_1 and self.address_line_2 != None:
+        if self.address_line_1 and self.address_line_2 != None and self.address_line_2 != "":
             street = f"{self.address_line_1} {self.address_line_2}"
         else:
             street = self.address_line_1
+
+        print(f"Street: {street}")
+        print(f"Town: {self.town}")
+        print(f"County: {self.county}")
+        print(f"Postcode: {self.post_code}")
 
         coords = get_coordinates(street,
                                  self.town, self.county, self.post_code)

@@ -171,3 +171,7 @@ DEFAULT_FROM_EMAIL = 'no-reply@apptrack.app'
 # Media
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# OpenCage
+
+OPEN_CAGE_KEY = getKey("OPEN_CAGE_KEY")

@@ -1,4 +1,5 @@
 {
     "SECRETKEY": "django-insecure-!hd-ca720va0$+pkg$qf#^qljw&b)zjp%=x9!7k43!a@)bwn=_",
-    "BREVO_API_KEY": "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"
+    "BREVO_API_KEY": "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",
+    "OPEN_CAGE_KEY": "bfcebf3ab47a451e9d26085f40c06e0b"
 }

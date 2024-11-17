@@ -28,6 +28,9 @@ class UserRegistrationForm(UserCreationForm):
         if self.cleaned_data.get('honeypot'):
             raise forms.ValidationError("Spam detected")
 
+    def save(self):
+        return super().save(commit=False)
+
 
 class ProfileRegistrationForm(forms.ModelForm):
 
@@ -54,3 +57,36 @@ class UserLoginForm(forms.Form):
 class ResendVerificationEmailForm(forms.Form):
     honeypot = forms.CharField(required=False, widget=forms.HiddenInput)
     email = forms.EmailField(required=True)
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    email = forms.EmailField(required=True)  # From User model
+    first_name = forms.CharField(
+        max_length=150, required=False)  # From User model
+    last_name = forms.CharField(
+        max_length=150, required=False)  # From User model
+
+    class Meta:
+        model = Profile
+        fields = ['bio', 'image', 'address_line_1', 'address_line_2',
+                  'town', 'county', 'post_code']  # Fields from Profile model
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Populate initial values for User fields
+        if self.instance and self.instance.user:
+            self.fields['email'].initial = self.instance.user.email
+            self.fields['first_name'].initial = self.instance.user.first_name
+            self.fields['last_name'].initial = self.instance.user.last_name
+
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        # Update User fields
+        user = profile.user
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        if commit:
+            user.save()
+            profile.save()
+        return profile

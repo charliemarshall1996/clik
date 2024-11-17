@@ -1,33 +1,39 @@
 
 import math
-import requests
+import time
+
+from django.conf import settings
+from django.utils import timezone
+from opencage.geocoder import OpenCageGeocode
+
+from .models import OpenCageAPIRequest
+
+geocoder = OpenCageGeocode(settings.OPEN_CAGE_KEY)
 
 
 def get_coordinates(street, city, county, postalcode, country="United Kingdom"):
-    url = 'https://nominatim.openstreetmap.org/search?'
-    params = {
-        'street': street,
-        'city': city,
-        'county': county,
-        'country': country,
-        'postalcode': postalcode,
-        'format': 'json',
-        'addressdetails': 1,
-        'limit': 1  # Only get the top result
-    }
-    response = requests.get(url, params=params)
+    now = timezone.now()
+    last_request = OpenCageAPIRequest.objects.last()
+    if last_request and last_request.last_request:
+        # Calculate the time difference
+        time_since_last_request = (
+            now - last_request.last_request).total_seconds()
 
-    if response.status_code == 200:
-        data = response.json()
-        if data:
-            latitude = data[0]['lat']
-            longitude = data[0]['lon']
-            return float(latitude), float(longitude)
-        else:
-            print("No results found.")
-    else:
-        print(f"Error: {response.status_code}")
-    return None
+        # If the last request was less than 1 second ago, wait for the remainder
+        if time_since_last_request < 1:
+            time.sleep(1 - time_since_last_request)
+
+    if not last_request:
+        last_request = OpenCageAPIRequest.objects.create()
+
+    query = f"{street}, {city}, {county}, {postalcode}, {country}"
+
+    result = geocoder.geocode(query)
+
+    last_request.last_request = now
+    last_request.save()
+
+    return float(result[0]['geometry']['lat']), float(result[0]['geometry']['lng']) if result else None
 
 
 def calculate_distance(lat1, lon1, lat2, lon2):

@@ -17,3 +17,8 @@ class Category(MPTTModel):
 
     def __str__(self):
         return self.name
+
+
+class OpenCageAPIRequest(models.Model):
+
+    last_request = models.DateTimeField(null=True, blank=True)

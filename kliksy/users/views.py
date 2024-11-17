@@ -14,7 +14,8 @@ from django.utils import timezone
 from .forms import (UserRegistrationForm,
                     ProfileRegistrationForm,
                     ResendVerificationEmailForm,
-                    UserLoginForm)
+                    UserLoginForm,
+                    ProfileUpdateForm)
 from .models import Profile
 from .utils import (send_verification_email,
                     get_time_since_last_email,
@@ -30,7 +31,7 @@ def registration_view(request):
         user_form = UserRegistrationForm(request.POST)
         profile_form = ProfileRegistrationForm(request.POST)
 
-        if user_form.is_valid():  # noqa
+        if user_form.is_valid() and profile_form.is_valid():  # noqa
 
             if user_form.cleaned_data['honeypot']:
                 # Honeypot field should be empty. If it's filled, treat it as spam.
@@ -252,17 +253,16 @@ def logout_view(request):
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     template_name = 'users/update_profile.html'
-    slug_field = 'slug'  # Or 'slug' if you use a custom slug field
-    slug_url_kwarg = 'slug'  # This is the URL parameter expected
-    fields = ("user.email", "user.first_name",
-              "user.last_name", "bio", "image")
+    form_class = ProfileUpdateForm
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
     def form_valid(self, form):
         # Check if the image is being cleared
-        if 'image-clear' in self.request.POST:  # Default Django form clearing behavior
+        if 'image-clear' in self.request.POST:
             form.instance.image = 'default_profile_pic.png'
         return super().form_valid(form)
 
     def get_object(self):
-        # Return the logged-in user based on the slug
-        return self.request.user
+        # Fetch the Profile instance based on the slug
+        return Profile.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))

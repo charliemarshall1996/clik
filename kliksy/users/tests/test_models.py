@@ -90,7 +90,7 @@ class TestProfileModel:
         assert profile.user == user
         assert profile.bio == "This is a test bio."
         assert profile.date_of_birth == valid_date_of_birth
-        assert profile.profile_pic.name == 'default_profile_pic.jpg'
+        assert profile.image.name == 'default_profile_pic.jpg'
 
     def test_clean_method_with_valid_age(self, user, valid_date_of_birth, valid_address):
         """Test clean method does not raise ValidationError for a valid age."""
@@ -113,11 +113,11 @@ class TestProfileModel:
             user=user, date_of_birth=valid_date_of_birth, **valid_address)
         assert str(profile) == user.email
 
-    def test_profile_pic_default_value(self, user, valid_date_of_birth, valid_address):
-        """Test that profile_pic has the default value if not specified."""
+    def test_image_default_value(self, user, valid_date_of_birth, valid_address):
+        """Test that image has the default value if not specified."""
         profile = Profile.objects.create(
             user=user, date_of_birth=valid_date_of_birth, **valid_address)
-        assert profile.profile_pic.name == 'default_profile_pic.jpg'
+        assert profile.image.name == 'default_profile_pic.jpg'
 
     def test_clean_method_with_valid_address(self, user, valid_date_of_birth, valid_address, mocker):
         """Test clean method does not raise ValidationError for a valid address within allowed area."""
