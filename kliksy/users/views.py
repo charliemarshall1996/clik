@@ -240,3 +240,9 @@ class ProfileView(LoginRequiredMixin, DetailView):
     def get_object(self):
         # Return the logged-in user based on the slug
         return self.request.user
+
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('home')
