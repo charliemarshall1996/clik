@@ -1,10 +1,16 @@
 
 from django.forms import ModelForm, DateInput, TimeInput
+from mptt.forms import TreeNodeChoiceField
+
+from core.models import Category
 
 from .models import Group, Event
 
 
 class CreateGroupForm(ModelForm):
+
+    category = TreeNodeChoiceField(queryset=Category.objects.all())
+
     class Meta:
         model = Group
         fields = ['name', 'image', 'description', 'category']
@@ -14,6 +20,7 @@ class CreateGroupForm(ModelForm):
 
 
 class CreateEventForm(ModelForm):
+
     class Meta:
         model = Event
         fields = ['image', 'name', 'description', 'date', 'time', 'location']
