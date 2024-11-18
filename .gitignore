@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 
 kliksy/keys.json
+kliksy/db.sqlite3
+kliksy/kliksy/settings.py
