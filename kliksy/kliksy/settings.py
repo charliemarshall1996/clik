@@ -166,7 +166,7 @@ ANYMAIL = {
     "BREVO_API_KEY": getKey("BREVO_API_KEY"),  # use brevo api key
     "IGNORE_RECIPIENT_STATUS": True,
 }
-DEFAULT_FROM_EMAIL = 'no-reply@apptrack.app'
+DEFAULT_FROM_EMAIL = 'no-reply@kliksy.org'
 
 # Media
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
