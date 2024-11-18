@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+{% extends 'core/unauthorized_base.html' %}
+
+{% block content %} 
+    <div class="card w-50 m-auto">
+        <div class="card-header">
+            <h2 class="card-title">Register</h2>
+        </div>
+  
+        <div class="card-body">
+            {% load crispy_forms_tags %}
+            <form method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ user_form.honeypot }}
+                        {{ user_form.email|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ user_form.password1|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ user_form.password2|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ user_form.first_name|as_crispy_field }}
+                    </div>
+                    <div class="col m-auto">
+                        {{ user_form.last_name|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ profile_form.date_of_birth|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ profile_form.address_line_1|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ profile_form.address_line_2|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ profile_form.town|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ profile_form.county|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        {{ profile_form.post_code|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-auto">
+                        <p><strong>Would you like to opt in for communications emails from Kliksy?</strong></p>
+                    </div>
+                    <div class="col m-auto">
+                        {{ profile_form.email_comms_opt_in|as_crispy_field }}
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+        <div class="card-footer text-center">
+            <a href="#">Login</a>
+        </div>
+
+    </div>
+{% endblock %}

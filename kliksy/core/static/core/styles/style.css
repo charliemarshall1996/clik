@@ -1,0 +1,86 @@
+
+
+/* Bootstrap */
+
+/* Bases */
+
+.nav-icon {
+    max-width: 50px;
+}
+
+.nav-link {
+    font-weight: bold;
+}
+
+/* Index */
+
+.btn-hero {
+    font-size: 1rem;
+}
+
+.index-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Ensure the overlay sits behind the content */
+}
+
+.hero-heading {
+    color: #4A7C59;
+    font-size: 5vw;
+    font-weight: bold;
+}
+
+.hero-description {
+    color: #F4A261;
+    font-weight: 400;
+    font-size: 2vw;
+}
+
+#about-image {
+    max-width: 100%;
+    height: auto;
+    padding: 0;
+}
+
+#footer {
+    padding-top: 1%;
+    margin-top: 1%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#content {
+    min-height: 75vh;
+}
+
+/* Add this to your existing CSS file */
+
+/* header {
+    display: flex!important;
+} */
+
+/* Styles for large screens (4K resolution and above) */
+@media only screen and (min-width: 2560px) {
+    h1.display-5 {
+        font-size: 5rem; /* Increase the h1 font size */
+    }
+
+    h2.display-5 {
+        font-size: 4rem; /* Increase the h2 font size */
+    }
+
+    p.fs-4 {
+        font-size: .5rem; /* Increase the paragraph font size */
+    }
+
+    .btn-lg {
+        font-size: 1.5rem; /* Increase button text size */
+    }
+}
+
+.index-img {
+    max-height: 300px;
+    padding: 0;
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+{% extends 'core/authorized_base.html' %}
+
+{% block content %}
+
+<div class="card w-75 m-auto">
+    <div class="card-header flex-nowrap">
+        <div class="row text-start justify-content-between align-items-stretch text-nowrap">
+            <div class="col-md-8 d-flex align-items-center">
+                <img src="{{ group.image.url }}" alt="Profile Image" class="img-thumbnail me-3" style="max-width: 50px;">
+                <h1 class="mb-0">{{ group.name }}</h1>
+            </div>
+            {% if user == group.creator.user %}
+            <div class="col-md-2 text-end">
+                <a href="{% url 'groups:create_event' group.name %}" class="btn btn-primary">Create Event</a>
+            </div>
+            <div class="col-md-2 text-end">
+                <a href="{% url 'groups:group_update' group.name %}" class="btn btn-primary">Edit Group</a>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>Members</h2>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item">
+                            <div class="row d-flex text-start">
+                                <div class="col-2 d-flex align-items-center">
+                                    <img src="{{ group.creator.profile_pic.url }}" alt="Profile Image" class="img-thumbnail" style="max-width: 50px;">
+                                </div>
+                                <div class="col d-flex align-items-center">
+                                    <p>{{ group.creator.user.first_name }} {{ group.creator.user.last_name }} (creator)</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% for member in group.members.all %}
+                    {% if member != group.creator %}
+                    
+                        <div class="list-group-item">
+                            <div class="row text-start">
+                                <div class="col">
+                                    <img src="{{ member.profile_pic.url }}" alt="Profile Image" class="img-thumbnail" style="max-width: 50px;">
+                                </div>
+                                <div class="col">
+                                    <p>{{ member.user.first_name }} {{ member.user.last_name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>About</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>{{ group.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h2>Events</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="list-group">
+                        {% for event in group.events.all %}
+                        <a class="list-group-item-action" href="{% url 'groups:event_detail' event.id %}">
+                            <div class="row text-start p-2 align-items-center">
+                                <div class="col-3">
+                                    <h3>{{ event.name }}</h3>
+                                </div>
+                                <div class="col-2">
+                                    <p>{{ event.date }}</p>
+                                </div>
+                                <div class="col-2">
+                                    <p>{{ event.time }}</p>
+                                </div>
+                                <div class="col-3">
+                                    <img src="{{ event.image.url }}" alt="Event Image" class="img-thumbnail me-3" style="max-width: 50px;">
+                                </div>
+                            </div>
+                        </a>
+                        {% empty %}
+                        <div class="row">
+                            <div class="col">
+                                <p>This group has no events yet.</p>
+                                {% if user == group.creator.user %}
+                                <a href="{% url 'groups:create_event' group.name %}" class="btn btn-primary">Create an Event</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col">
+                        
+                <div class="row">
+                    <div class="col">
+                        <h3>Categories</h3>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    {% for category in group.category.all %}
+                    <div class="col cat-box" id="cat-{{ category.id }}">
+                        {{ category.name }}
+                    </div>
+                    {% endfor %}
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+{% endblock %}

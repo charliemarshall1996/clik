@@ -1,0 +1,23 @@
+
+{% extends "core/unauthorized_base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    
+    <div class="card m-auto w-50">
+        <div class="card-header justify-content-center">
+            <h2>Resend Verification Email</h2>
+        </div>
+
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.honeypot }}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Resend Email</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

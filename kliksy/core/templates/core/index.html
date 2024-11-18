@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+{% extends "core/unauthorized_base.html"%}
+
+{% load static %}
+
+{% block content %}
+<div class="container-fluid justify-content-center align-items-center index-header">
+    <div class="row text-center">
+        <div class="col-8 mx-auto">
+            <div class="row text-center">
+                <p class="hero-heading">Welcome to Kliksy</p>
+                <p class="mx-auto hero-description">Your Local Connection Starts Here!</p>
+            </div>
+            <div class="row text-center">
+                <div class="col-4 mx-auto text-center p-0">
+                    <a type="button" class="btn btn-hero btn-primary btn-lg px-4 gap-3" href="{% url 'users:register' %}">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h2 class="text-start display-5">What is Kliksy?</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p class="text-start mx-auto fs-4">
+                        At Kliksy, we believe that every neighborhood has a heartbeat, and it beats stronger when people come together. Whether you're looking to make new friends, discover hidden gems in your area, or simply enjoy what your community has to offer, Kliksy is here to connect you to the people, places, and activities that make your neighborhood feel like home.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex justify-self-end align-items-center d-none d-lg-flex">
+            <img class="img-fluid mx-auto ms-auto px-0 index-img" src="{% static 'core/images/index-friends-1.jpg' %}" alt="">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col d-flex justify-self-end align-items-center d-none d-lg-flex">
+            <img class="img-fluid mx-auto px-0 index-img" src="{% static 'core/images/index-cafe.jpg' %}" alt="">
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h2 class="text-end display-5">Discover, Connect, Thrive</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p class="text-end mx-auto fs-4">
+                        With Kliksy, finding ways to engage and make connections locally has never been easier. Explore upcoming events, casual meet-ups, and interest-based groups that fit your schedule and style. Dive into the local scene with fresh recommendations, from cozy cafés to bustling parks, and get insider tips from neighbors who share your interests.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h2 class="text-start display-5">How Kliksy Works</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <ol class="fs-4">
+                        <li><strong>Create Your Profile</strong> – Tell us a bit about yourself, and let’s start building your finding friends right here in your own town.</li>
+                        <li><strong>Join Events & Groups</strong>– From casual coffee meet-ups to weekend hikes, find events that match your vibe and meet people who do, too.</li>
+                        <li><strong>Stay Connected</strong> – Keep the conversation going with new friends, follow your favorite local spots, and always be the first to know about what’s happening around you.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex justify-self-end align-items-center d-none d-lg-flex">
+            <img class="img-fluid mx-auto px-0 index-img" src="{% static 'core/images/index-123.png' %}" alt="">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-flex justify-self-end align-items-center d-none d-lg-flex">
+            <img class="img-fluid mx-auto px-0" src="{% static 'core/images/index-friends-2.jpg' %}" alt="">
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h2 class="text-end display-5">Why Kliksy?</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p class="text-end mx-auto fs-4">
+                        Our mission is simple: <strong>to make local connections accessible and fun.</strong> Kliksy is designed for everyone – introverts, extroverts, and everyone in between. We believe in fostering an inclusive, positive space where each member adds to the unique tapestry of our communities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h2 class="display-5">Ready to Kliksy?</h2>
+        </div>
+    <div class="row">
+        <div class="col">
+            <p class="mx-auto fs-4">
+                        Start discovering, connecting, and creating memories that turn strangers into friends and make every corner of your neighborhood a place to belong. Sign up today and let’s make your local life a little brighter – one Kliksy at a time.
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p class="mx-auto fs-4"><strong>Join the Kliksy community today and experience the true power of local connection!</strong></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a type="button" class="btn btn-hero btn-primary btn-lg px-4 gap-3" href="{% url 'users:register' %}">Sign Up</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
