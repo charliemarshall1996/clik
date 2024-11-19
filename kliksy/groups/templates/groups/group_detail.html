@@ -13,10 +13,10 @@
             </div>
             {% if user == group.creator.user %}
             <div class="col-md-2 text-end">
-                <a href="{% url 'groups:create_event' group.name %}" class="btn btn-primary">Create Event</a>
+                <a href="{% url 'groups:create_event' group.formatted_name %}" class="btn btn-primary">Create Event</a>
             </div>
             <div class="col-md-2 text-end">
-                <a href="{% url 'groups:group_update' group.name %}" class="btn btn-primary">Edit Group</a>
+                <a href="{% url 'groups:group_update' group.formatted_name %}" class="btn btn-primary">Edit Group</a>
             </div>
 
             {% endif %}
@@ -35,7 +35,7 @@
                         <div class="list-group-item">
                             <div class="row d-flex text-start">
                                 <div class="col-2 d-flex align-items-center">
-                                    <img src="{{ group.creator.profile_pic.url }}" alt="Profile Image" class="img-thumbnail" style="max-width: 50px;">
+                                    <img src="{{ group.creator.image.url }}" alt="Profile Image" class="img-thumbnail" style="max-width: 50px;">
                                 </div>
                                 <div class="col d-flex align-items-center">
                                     <p>{{ group.creator.user.first_name }} {{ group.creator.user.last_name }} (creator)</p>
@@ -105,7 +105,7 @@
                             <div class="col">
                                 <p>This group has no events yet.</p>
                                 {% if user == group.creator.user %}
-                                <a href="{% url 'groups:create_event' group.name %}" class="btn btn-primary">Create an Event</a>
+                                <a href="{% url 'groups:create_event' group.formatted_name %}" class="btn btn-primary">Create an Event</a>
                                 {% endif %}
                             </div>
                         </div>

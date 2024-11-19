@@ -5,9 +5,49 @@
 {% block content %}
     <h1>Create Group</h1>
     {% load crispy_forms_tags %}
-    <form method="post">
+    {% load mptt_tags %}
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Create</button>
+        {{ form.name|as_crispy_field }}
+        {{ form.description|as_crispy_field }}
+        {{ form.image|as_crispy_field }}
+        <div class="accordion" id="accordion">
+            {% for category in form.category.field.queryset %}
+                {% if not category.parent %} 
+                <div class="accordion-item">
+                    <div class="row">
+                        <div class="col d-flex align-items-center">
+                            <div class="form-check d-flex align-items-center">
+                                <input type="checkbox" class="form-check-input m-auto" name="category" value="{{ category.pk }}" id="category_{{ category.pk }}">
+                                <label class="form-check-label" for="category_{{ category.pk }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion_{{ category.pk }}" aria-expanded="false" aria-controls="accordion_{{ category.pk }}">
+                                        {{ category.name }}
+                                    </button>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if category.subcategories.exists %}
+                    <div class="accordion-collapse collapse" id="accordion_{{ category.pk }}">
+                        <div class="accordion-body">
+                            <div class="list-group list-group-flush">
+                            {% for subcategory in category.subcategories.all %}
+                                <div class="list-group-item">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" name="category" value="{{ subcategory.pk }}" id="category_{{ subcategory.pk }}">
+                                        <label class="form-check-label" for="category_{{ subcategory.pk }}">{{ subcategory.name }}</label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
     </form>
 {% endblock %}

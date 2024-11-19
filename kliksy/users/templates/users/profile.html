@@ -9,7 +9,7 @@
         <div class="row text-start justify-content-end align-items-stretch text-nowrap">
             <div class="row text-start align-items-center">
                 <div class="col d-flex align-items-center">
-                    <img src="{{ profile.profile_pic.url }}" alt="Profile Image" class="img-thumbnail me-3" style="max-width: 50px;">
+                    <img src="{{ profile.image.url }}" alt="Profile Image" class="img-thumbnail me-3" style="max-width: 50px;">
                     <h1 class="mb-0">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
                 </div>
                 {% if profile.user == request.user %}

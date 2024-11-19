@@ -15,7 +15,7 @@
             <div class="card-body p-0">
                 <div class="list-group">
                     {% for group in page_obj %}
-                        <a class="list-group-item-action" href="{% url 'groups:group_detail' group.name %}">
+                        <a class="list-group-item-action" href="{% url 'groups:group_detail' group.formatted_name %}">
                             <div class="row text-start p-2 align-items-center">
                                 <div class="col">
                                     <h3>{{ group.name }}</h3>

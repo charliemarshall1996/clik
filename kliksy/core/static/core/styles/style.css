@@ -84,3 +84,13 @@
     max-height: 300px;
     padding: 0;
 }
+
+.form-check-input {
+    border: 2px solid black !important;
+    box-shadow: none; /* Remove Bootstrap's default focus shadow */
+}
+
+.form-check-input:checked {
+    background-color: black; /* Optional: Change background when checked */
+    border-color: black; /* Ensure the border stays black when checked */
+}

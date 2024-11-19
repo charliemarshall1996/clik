@@ -6,6 +6,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import UpdateView
 from django.urls import reverse
 
+from core.models import Category
 
 from .forms import CreateGroupForm, CreateEventForm
 from .models import Group, Event
@@ -15,6 +16,7 @@ from .models import Group, Event
 
 @login_required
 def create_group_view(request):
+    categories = Category.objects.all()
     if request.method == "POST":
         form = CreateGroupForm(request.POST)
         if form.is_valid():
@@ -30,13 +32,13 @@ def create_group_view(request):
     else:
         form = CreateGroupForm()
 
-    return render(request, 'groups/create_group.html', {'form': form})
+    return render(request, 'groups/create_group.html', {'form': form, 'categories': categories})
 
 
 class GroupDetailView(LoginRequiredMixin, DetailView):
     model = Group
     template_name = 'groups/group_detail.html'  # Adjust based on your template
-    slug_field = 'name'  # Or 'slug' if you use a custom slug field
+    slug_field = 'formatted_name'  # Or 'slug' if you use a custom slug field
     slug_url_kwarg = 'slug'  # This is the URL parameter expected
 
 
@@ -54,7 +56,7 @@ class GroupUpdateView(LoginRequiredMixin, UpdateView):
     model = Group
     template_name = 'groups/group_update.html'
     fields = ['name', 'image', 'category']
-    slug_field = 'name'
+    slug_field = 'formatted_name'
     slug_url_kwarg = 'slug'
 
     def form_valid(self, form):
@@ -68,20 +70,21 @@ class GroupUpdateView(LoginRequiredMixin, UpdateView):
 
 
 @login_required
-def create_event_view(request, group_name):
-    group = Group.objects.get(name=group_name)
+def create_event_view(request, formatted_group_name):
+    group = Group.objects.get(formatted_name=formatted_group_name)
     if request.method == 'POST':
         form = CreateEventForm(request.POST)
         if form.is_valid():
             event = form.save()
             event.group = group
-            event.members.add(request.user.profile)
             event.save()
-            return redirect('groups:group_detail', slug=group_name)
+            event.attendees.add(request.user.profile)
+            event.save()
+            return redirect('groups:group_detail', slug=formatted_group_name)
     else:
         form = CreateEventForm()
 
-    return render(request, 'groups/create_group.html', {'form': form})
+    return render(request, 'groups/create_event.html', {'form': form})
 
 
 class EventDetailView(LoginRequiredMixin, DetailView):
@@ -110,12 +113,12 @@ def leave_event_view(request, event_id):
 
 
 @login_required
-def join_group_view(request, group_name):
-    group = Group.objects.get(name=group_name)
+def join_group_view(request, formatted_group_name):
+    group = Group.objects.get(formatted_name=formatted_group_name)
     user = request.user
     group.members.add(user.profile)
     group.save()
-    return redirect('groups:group_detail', slug=group_name)
+    return redirect('groups:group_detail', slug=formatted_group_name)
 
 
 class EventsListView(LoginRequiredMixin, ListView):

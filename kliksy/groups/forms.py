@@ -1,6 +1,6 @@
 
-from django.forms import ModelForm, DateInput, TimeInput
-from mptt.forms import TreeNodeChoiceField
+from django.forms import ModelForm, DateInput, TimeInput, CheckboxSelectMultiple
+from mptt.forms import TreeNodeMultipleChoiceField
 
 from core.models import Category
 
@@ -9,7 +9,11 @@ from .models import Group, Event
 
 class CreateGroupForm(ModelForm):
 
-    category = TreeNodeChoiceField(queryset=Category.objects.all())
+    category = TreeNodeMultipleChoiceField(
+        queryset=Category.objects.all(),
+        required=True,
+        widget=CheckboxSelectMultiple
+    )
 
     class Meta:
         model = Group

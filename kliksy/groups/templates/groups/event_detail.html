@@ -17,7 +17,7 @@
             </div>
             {% endif %}
 
-            {% if user.profile in event.group.members.all %}
+            {% if user.profile in event.group.attendees.all %}
                 {% if user.profile in event.attendees.all %}
                 <div class="col-md-2 text-end">
                     <a href="{% url 'groups:leave_event' event.id %}" class="btn btn-danger">Leave Event</a>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <a href="{% url 'groups:join_group' event.group.name %}" class="btn btn-primary">Join Group</a>
+                            <a href="{% url 'groups:join_group' event.group.formatted_name %}" class="btn btn-primary">Join Group</a>
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                         <div class="list-group-item">
                             <div class="row text-start">
                                 <div class="col">
-                                    <img src="{{ attendee.profile_pic.url }}" alt="Profile Image" class="img-thumbnail" style="max-width: 50px;">
+                                    <img src="{{ attendee.image.url }}" alt="Profile Image" class="img-thumbnail" style="max-width: 50px;">
                                 </div>
                                 <div class="col">
                                     <p>{{ attendee.user.first_name }} {{ attendee.user.last_name }}</p>
